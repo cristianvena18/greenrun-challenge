@@ -1,0 +1,5 @@
+version: '3.1'
+services:
+  Api:
+    container_name: greenrun_api
+    build: '../server'
