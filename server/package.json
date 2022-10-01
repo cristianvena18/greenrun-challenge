@@ -14,6 +14,7 @@
     "dotenv-safe": "^8.2.0",
     "knex": "^2.3.0",
     "node-dependency-injection": "^3.0.3",
+    "ts-money": "^0.4.8",
     "uuid": "^9.0.0",
     "uuid-validate": "^0.0.3"
   },
