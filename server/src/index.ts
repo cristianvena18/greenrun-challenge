@@ -1,3 +1,6 @@
+import {config} from 'dotenv-safe';
+
+config();
 import Server from './server';
 
 process.on('uncaughtException', (error) => {

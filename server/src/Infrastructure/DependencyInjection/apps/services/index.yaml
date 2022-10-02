@@ -1,0 +1,36 @@
+services:
+  User.DepositMoneyHandler:
+    class: Application/Commands/Handler/Users/DepositMoneyHandler
+    arguments: ['@User.Repository']
+
+  User.BlockUserHandler:
+    class: Application/Commands/Handler/Users/BlockUserHandler
+    arguments: ['@User.Repository']
+
+  User.GetBalanceHandler:
+    class: Application/Commands/Handler/Users/GetBalanceHandler
+    arguments: ['@User.Repository']
+
+  User.WithdrawMoneyHandler:
+    class: Application/Commands/Handler/Users/WithdrawMoneyHandler
+    arguments: ['@User.Repository']
+
+  Bets.ChangeBetStatusHandler:
+    class: Application/Commands/Handler/Bets/ChangeBetStatusHandler
+    arguments: ['@Bets.Repository']
+
+  Bets.CreateBetHandler:
+    class: Application/Commands/Handler/Bets/CreateBetHandler
+    arguments: ['@Bets.Repository']
+
+  Bets.PlaceBetHandler:
+    class: Application/Commands/Handler/Bets/PlaceBetHandler
+    arguments: ['@Bets.Repository', '@User.Repository']
+
+  Bets.SettleBetResultHandler:
+    class: Application/Commands/Handler/Bets/SettleBetResultHandler
+    arguments: ['@Bets.Repository']
+
+  Transaction.GetTransactionsFilteredHandler:
+    class: Application/Commands/Handler/Transactions/GetTransactionsFilteredHandler
+    arguments: ['@User.Repository']

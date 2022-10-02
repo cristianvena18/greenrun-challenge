@@ -13,6 +13,10 @@ abstract class EnumValueObject<T> {
   }
 
   protected abstract throwErrorForInvalidValue(value: T): void;
+
+  equals(value: T): boolean {
+    return this.value === value;
+  }
 }
 
 export default EnumValueObject;

@@ -13,7 +13,7 @@ class Router {
       this.actions.map(action => ({
         method: action.METHOD,
         path: action.ROUTE_PATH,
-        handler: action.run,
+        handler: action.run.bind(action),
       })
     ));
 

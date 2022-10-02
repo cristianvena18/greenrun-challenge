@@ -4,7 +4,8 @@
   "description": "Challenge for Green Run Backend Node Js",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "dev": "tsnd --respawn src/index.ts"
   },
   "author": "Cristian Vena",
   "license": "ISC",
@@ -13,6 +14,7 @@
     "config": "^3.3.8",
     "dotenv-safe": "^8.2.0",
     "knex": "^2.3.0",
+    "mysql": "^2.18.1",
     "node-dependency-injection": "^3.0.3",
     "ts-money": "^0.4.8",
     "uuid": "^9.0.0",

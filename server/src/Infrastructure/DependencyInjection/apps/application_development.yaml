@@ -1,4 +1,0 @@
-imports:
-  - { resource: ./services/index.yaml }
-  - { resource: ./database/index.yaml }
-  - { resource: ./http/index.yaml }

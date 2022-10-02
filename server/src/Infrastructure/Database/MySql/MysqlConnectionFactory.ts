@@ -1,18 +1,19 @@
 import {MysqlConfig} from "./MysqlConfigFactory";
 import knex, {Knex} from "knex";
 import {Nullable} from "../../../Domain/ValueObjects/Nullable";
+import path from "path";
 
 
 class MysqlConnectionFactory {
   private static clients: { [key: string]: Knex } = {};
 
-  static async createClient(
+  static createClient(
     config: MysqlConfig
-  ): Promise<Knex> {
+  ): Knex {
     let client = MysqlConnectionFactory.getClient('default');
 
     if (!client) {
-      client = await MysqlConnectionFactory.createAndConnectClient(config);
+      client = MysqlConnectionFactory.createAndConnectClient(config);
 
       MysqlConnectionFactory.registerClient(client, 'default');
     }
@@ -24,9 +25,9 @@ class MysqlConnectionFactory {
     return MysqlConnectionFactory.clients[contextName];
   }
 
-  private static async createAndConnectClient(
+  private static createAndConnectClient(
     config: MysqlConfig
-  ): Promise<Knex> {
+  ): Knex {
     const client = knex({
       client: 'mysql',
       connection: {
@@ -38,8 +39,11 @@ class MysqlConnectionFactory {
       },
       migrations: {
         tableName: 'migrations',
-      }
+        directory: path.resolve(path.join(__dirname, '..', 'Migrations')),
+      },
     });
+
+    client.migrate.up({});
 
     return client;
   }

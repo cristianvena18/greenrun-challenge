@@ -1,0 +1,58 @@
+services:
+  User.DepositMoneyAction:
+    class: Presentation/Actions/Users/DepositMoneyAction
+    arguments: ['@User.DepositMoneyHandler']
+    tags:
+      - { name: 'apiAction' }
+
+  User.BlockUserAction:
+    class: Presentation/Actions/Users/BlockUserAction
+    arguments: ['@User.BlockUserHandler']
+    tags:
+      - { name: 'apiAction' }
+
+  User.GetBalanceAction:
+    class: Presentation/Actions/Users/GetBalanceAction
+    arguments: ['@User.GetBalanceHandler']
+    tags:
+      - { name: 'apiAction' }
+
+  User.WithdrawMoneyAction:
+    class: Presentation/Actions/Users/WithdrawMoneyAction
+    arguments: ['@User.WithdrawMoneyHandler']
+    tags:
+      - { name: 'apiAction' }
+
+  Bets.ChangeBetStatusAction:
+    class: Presentation/Actions/Bets/ChangeBetStatusAction
+    arguments: ['@Bets.ChangeBetStatusHandler']
+    tags:
+      - { name: 'apiAction' }
+
+  Bets.CreateBetAction:
+    class: Presentation/Actions/Bets/CreateBetAction
+    arguments: ['@Bets.CreateBetHandler']
+    tags:
+      - { name: 'apiAction' }
+
+  Bets.PlaceBetAction:
+    class: Presentation/Actions/Bets/PlaceBetAction
+    arguments: ['@Bets.PlaceBetHandler']
+    tags:
+      - { name: 'apiAction' }
+
+  Bets.SettleBetResultAction:
+    class: Presentation/Actions/Bets/SettleBetResultAction
+    arguments: ['@Bets.SettleBetResultHandler']
+    tags:
+      - { name: 'apiAction' }
+
+  Transaction.GetTransactionsAction:
+    class: Presentation/Actions/Transactions/GetTransactionsAction
+    arguments: ['@Transaction.GetTransactionsFilteredHandler']
+    tags:
+      - { name: 'apiAction' }
+
+  Shared.Router:
+    class: Presentation/Router/index
+    arguments: ['!tagged apiAction']

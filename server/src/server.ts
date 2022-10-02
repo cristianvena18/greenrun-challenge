@@ -1,16 +1,15 @@
-import {config as dotenvConfig} from 'dotenv-safe';
 import Router from "./Presentation/Router";
 import {container} from "./Infrastructure/DependencyInjection";
 import Hapi from '@hapi/hapi';
 import config from 'config';
+import {ContainerBuilder} from "node-dependency-injection";
 
 class Server {
-  private router: Router;
+  private router!: Router;
   private server: Hapi.Server;
+  private container!: ContainerBuilder;
 
   constructor() {
-    this.loadConfig();
-    this.router = container().get('HTTP.Router') as Router;
 
     this.server = Hapi.server({
       port: config.get('server.port'),
@@ -19,20 +18,13 @@ class Server {
   }
 
   public async init(): Promise<void> {
-    await this.connectionDatabase();
+    this.container = await container();
+    this.router = this.container.get('Shared.Router') as Router;
+    this.container.get('Shared.DatabaseConnection');
     this.loadRoutes();
-
 
     await this.server.start();
     console.log('Server running on %s', this.server.info.uri);
-  }
-
-  private loadConfig() {
-    dotenvConfig();
-  }
-
-  private async connectionDatabase() {
-
   }
 
   private loadRoutes() {

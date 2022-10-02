@@ -1,0 +1,20 @@
+services:
+  Shared.DatabaseConfig:
+    factory:
+      class: Infrastructure/Database/MySql/MysqlConfigFactory
+      method: createConfig
+    arguments: []
+
+  Shared.DatabaseConnection:
+    factory:
+      class: Infrastructure/Database/MySql/MysqlConnectionFactory
+      method: createClient
+    arguments: ['@Shared.DatabaseConfig']
+
+  User.Repository:
+    class: Infrastructure/Database/Repositories/KnexUserRepository
+    arguments: ['@Shared.DatabaseConnection']
+
+  Bets.Repository:
+    class: Infrastructure/Database/Repositories/KnexBetRepository
+    arguments: ['@Shared.DatabaseConnection']
