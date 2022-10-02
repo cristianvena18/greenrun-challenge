@@ -5,7 +5,7 @@
 exports.up = function(knex) {
    return knex.schema
     .createTable('transactions', function (table) {
-      table.string('id');
+      table.string('id').unique();
       table.string('user_id').nullable();
       table.integer('amount').nullable();
       table.string('category', 255).nullable();
