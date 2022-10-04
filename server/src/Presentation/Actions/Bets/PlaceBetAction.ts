@@ -4,6 +4,7 @@ import PlaceBetCommand from "../../../Application/Commands/Command/Bets/PlaceBet
 import Uuid from "../../../Domain/ValueObjects/Uuid";
 import Money from "../../../Domain/ValueObjects/Money";
 import PlaceBetHandler from "../../../Application/Commands/Handler/Bets/PlaceBetHandler";
+import {ErrorHandler} from "../../Utils/ErrorHandler";
 
 class PlaceBetAction extends BaseAction {
   METHOD: "POST" = 'POST';
@@ -25,10 +26,9 @@ class PlaceBetAction extends BaseAction {
     );
 
     try {
-
       await this.handler.execute(command);
     } catch (err) {
-      console.error(err);
+      return ErrorHandler.resolve(err as Error, h);
     }
 
     return h.response().code(200);

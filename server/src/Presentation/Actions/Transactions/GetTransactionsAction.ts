@@ -6,6 +6,7 @@ import Uuid from "../../../Domain/ValueObjects/Uuid";
 import TransactionCategory from "../../../Domain/ValueObjects/TransactionCategory";
 import GetTransactionsFilteredHandler
   from "../../../Application/Commands/Handler/Transactions/GetTransactionsFilteredHandler";
+import {ErrorHandler} from "../../Utils/ErrorHandler";
 
 class GetTransactionsAction extends BaseAction {
   METHOD: "GET" = "GET";
@@ -20,17 +21,20 @@ class GetTransactionsAction extends BaseAction {
     const filters = request.query;
     const {id} = request.params
 
-    const command = new GetTransactionsFilteredCommand(
-      new Uuid(id),
-      filters.category ?
-        new TransactionCategory(filters.category) :
-        null
-    );
+    try {
+      const command = new GetTransactionsFilteredCommand(
+        new Uuid(id),
+        filters.category ?
+          new TransactionCategory(filters.category) :
+          null
+      );
 
-    const result = await this.handler.execute(command);
+      const result = await this.handler.execute(command);
 
-
-    return h.response(result.map(transaction => transaction.toPrimitives())).code(200);
+      return h.response(result.map(transaction => transaction.toPrimitives())).code(200);
+    } catch (e) {
+      return ErrorHandler.resolve(e as Error, h);
+    }
   }
 }
 

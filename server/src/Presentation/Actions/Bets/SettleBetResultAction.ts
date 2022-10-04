@@ -4,6 +4,7 @@ import SettleBetResultCommand from "../../../Application/Commands/Command/Bets/S
 import Uuid from "../../../Domain/ValueObjects/Uuid";
 import BetResult from "../../../Domain/ValueObjects/BetResult";
 import SettleBetResultHandler from "../../../Application/Commands/Handler/Bets/SettleBetResultHandler";
+import {ErrorHandler} from "../../Utils/ErrorHandler";
 
 class SettleBetResultAction extends BaseAction {
   METHOD: "PUT" = 'PUT';
@@ -17,9 +18,13 @@ class SettleBetResultAction extends BaseAction {
     const {id} = request.params;
     const body = request.payload as any;
 
-    const command = new SettleBetResultCommand(new Uuid(id), new BetResult(body.result))
+    try {
+      const command = new SettleBetResultCommand(new Uuid(id), new BetResult(body.result))
 
-    await this.handler.execute(command);
+      await this.handler.execute(command);
+    } catch (e) {
+      return ErrorHandler.resolve(e as Error, h)
+    }
 
     return h.response().code(200);
   }

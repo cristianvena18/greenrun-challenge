@@ -4,6 +4,7 @@ import WithdrawMoneyCommand from "../../../Application/Commands/Command/Users/Wi
 import Money from "../../../Domain/ValueObjects/Money";
 import Uuid from "../../../Domain/ValueObjects/Uuid";
 import WithdrawMoneyHandler from "../../../Application/Commands/Handler/Users/WithdrawMoneyHandler";
+import {ErrorHandler} from "../../Utils/ErrorHandler";
 
 class WithdrawMoneyAction extends BaseAction {
   METHOD: "PUT" = 'PUT';
@@ -20,12 +21,13 @@ class WithdrawMoneyAction extends BaseAction {
 
     const body = request.payload as any;
 
-    const command = new WithdrawMoneyCommand(Money.fromPrimitives(body.amount), new Uuid(id));
 
     try {
+      const command = new WithdrawMoneyCommand(Money.fromPrimitives(body.amount), new Uuid(id));
+
       await this.handler.execute(command);
     } catch (err) {
-      console.error(err);
+      return ErrorHandler.resolve(err as Error, h);
     }
 
     return h.response().code(200);

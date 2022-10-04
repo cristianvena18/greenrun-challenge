@@ -3,6 +3,7 @@ import CreateBetCommand from "../../../Application/Commands/Command/Bets/CreateB
 import {Request, ResponseToolkit} from "@hapi/hapi";
 import Money from "../../../Domain/ValueObjects/Money";
 import CreateBetHandler from "../../../Application/Commands/Handler/Bets/CreateBetHandler";
+import {ErrorHandler} from "../../Utils/ErrorHandler";
 
 class CreateBetAction extends BaseAction {
 
@@ -27,7 +28,7 @@ class CreateBetAction extends BaseAction {
     await this.handler.execute(command);
 
     } catch (err) {
-      console.error(err);
+      return ErrorHandler.resolve(err as Error, h);
     }
 
     return h.response().code(200);

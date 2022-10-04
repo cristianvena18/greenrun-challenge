@@ -4,6 +4,7 @@ import DepositMoneyCommand from "../../../Application/Commands/Command/Users/Dep
 import Uuid from "../../../Domain/ValueObjects/Uuid";
 import Money from "../../../Domain/ValueObjects/Money";
 import DepositMoneyHandler from "../../../Application/Commands/Handler/Users/DepositMoneyHandler";
+import {ErrorHandler} from "../../Utils/ErrorHandler";
 
 class DepositMoneyAction extends BaseAction {
   METHOD: "POST" = 'POST';
@@ -22,11 +23,9 @@ class DepositMoneyAction extends BaseAction {
     const command = new DepositMoneyCommand(new Uuid(id), Money.fromPrimitives(amount))
 
     try {
-
       await this.handler.execute(command);
     } catch (err) {
-      console.error(err);
-      throw err;
+      return ErrorHandler.resolve(err as Error, h);
     }
 
     return h.response().code(200);

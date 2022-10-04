@@ -4,6 +4,7 @@ import ChangeBetStatusCommand from "../../../Application/Commands/Command/Bets/C
 import Uuid from "../../../Domain/ValueObjects/Uuid";
 import BetStatus from "../../../Domain/ValueObjects/BetStatus";
 import ChangeBetStatusHandler from "../../../Application/Commands/Handler/Bets/ChangeBetStatusHandler";
+import {ErrorHandler} from "../../Utils/ErrorHandler";
 
 class ChangeBetStatusAction extends BaseAction {
   METHOD: "PUT" = 'PUT';
@@ -24,7 +25,7 @@ class ChangeBetStatusAction extends BaseAction {
     try{
       await this.handler.execute(command);
     } catch(err) {
-      console.log(err);
+      return ErrorHandler.resolve(err as Error, h)
     }
 
     return h.response().code(200)
