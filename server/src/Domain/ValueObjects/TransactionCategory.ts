@@ -6,6 +6,7 @@ class TransactionCategory extends EnumValueObject<string>{
   static BET: string = 'bet';
   static DEPOSIT: string = 'deposit';
   static WITHDRAW: string = 'withdraw';
+  static WON: string = 'winning';
 
   constructor(category: string) {
     super(category, TransactionCategory.VALID_VALUES);

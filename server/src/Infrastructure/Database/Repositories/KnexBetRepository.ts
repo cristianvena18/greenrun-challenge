@@ -20,7 +20,7 @@ class KnexBetRepository implements IBetRepository {
     const primitives = bet.toPrimitives();
 
     for (const user of primitives.users) {
-      await this.connection('user_bets').insert(user)
+      await this.connection('user_bets').insert(user).onConflict().merge(['odd', 'updated_at', 'state']);
     }
     delete primitives.users;
 
@@ -32,6 +32,28 @@ class KnexBetRepository implements IBetRepository {
     } else {
       await this.repository().update(primitives);
     }
+  }
+
+  // @ts-ignore
+  async getFullByIdOrFail(id: string): Promise<Bet> {
+    const bet = await this.repository().where({id}).first();
+
+    if (!bet) {
+      throw new EntityNotFound('bet not found');
+    }
+
+    let userBetsCompleted = []
+
+    const userBets = await this.connection('user_bets').where({'bet_id': id}).select();
+
+    for (const userBet of userBets) {
+      const user = await this.connection('users').where({id: userBet.user_id}).first();
+      userBetsCompleted.push({...userBet, user});
+    }
+
+    bet.users = userBetsCompleted;
+
+    return Bet.fromPrimitives(bet);
   }
 
   private repository() {

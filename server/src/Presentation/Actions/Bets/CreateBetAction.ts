@@ -22,7 +22,7 @@ class CreateBetAction extends BaseAction {
       body.sport,
       body.name,
       body.eventId,
-      Money.fromPrimitives(body.odd)
+      body.odd
     );
 
     await this.handler.execute(command);

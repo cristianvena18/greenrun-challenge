@@ -2,11 +2,13 @@ import {IUserRepository} from "../../../Domain/Contracts/IUserRepository";
 import {User} from "../../../Domain/Entities/User";
 import {Knex} from "knex";
 import EntityNotFound from "../../../Domain/Exceptions/EntityNotFound";
+import UserBet from "../../../Domain/Entities/UserBet";
 
 class KnexUserRepository implements IUserRepository {
   constructor(
     private connection: Knex
-  ) {}
+  ) {
+  }
 
   async getByIdOrFail(id: string): Promise<User> {
 

@@ -9,7 +9,7 @@ class UserBet {
   private id: Uuid;
   private user: User;
   private bet: Bet;
-  private odd: Money;
+  private odd?: number;
   private amount: Nullable<Money> = null;
   private state!: UserBetState;
   private createdAt!: Date;
@@ -17,19 +17,20 @@ class UserBet {
   private deleted: boolean = false;
   private deletedAt: Nullable<Date> = null;
 
-  constructor(id: Uuid, user: User, bet: Bet, odd: Money) {
+  constructor(id: Uuid, user: User, bet: Bet, amount: Money) {
     this.id = id;
     this.user = user;
     this.bet = bet;
-    this.odd = odd;
+    this.amount = amount;
   }
 
   static fromPrimitives(primitives: any): UserBet {
     const userBet = new UserBet(
       new Uuid(primitives.id),
       User.fromPrimitives(primitives.user),
-      Bet.fromPrimitives(primitives.bet),
-      Money.fromPrimitives(primitives.odd),
+      // @ts-ignore I didn't solve this problem
+      primitives.bet ? Bet.fromPrimitives(primitives.bet) : undefined,
+      primitives.odd,
     );
 
     userBet.state = new UserBetState(primitives.state);
@@ -42,9 +43,9 @@ class UserBet {
     return userBet;
   }
 
-  static create(user: User, bet: Bet, odd: Money): UserBet {
+  static create(user: User, bet: Bet, amount: Money): UserBet {
     const id = new Uuid(Uuid.random().toString());
-    const userBet = new UserBet(id, user, bet, odd);
+    const userBet = new UserBet(id, user, bet, amount);
 
     userBet.state = new UserBetState(UserBetState.OPEN)
     userBet.createdAt = new Date();
@@ -58,8 +59,8 @@ class UserBet {
     return {
       id: this.id.toString(),
       user_id: this.user.getId().toString(),
-      bet_id: this.bet.getId().toString(),
-      odd: this.odd.amount,
+      bet_id: this.bet?.getId().toString(),
+      odd: this.odd,
       amount: this.amount?.amount,
       state: this.state.value,
       created_at: this.createdAt.toISOString(),
@@ -71,6 +72,23 @@ class UserBet {
 
   getId() {
     return this.id;
+  }
+
+  payWithOdd(odd: number, result: UserBetState) {
+    if (!this.amount) {
+      throw new Error('i dont know');
+    }
+
+    this.state = result;
+    this.odd = odd;
+    if (result.equals(UserBetState.WON)) {
+      const amount = this.amount.multiply(odd);
+      this.user.payBet(amount)
+    }
+  }
+
+  getUser() {
+    return this.user;
   }
 }
 

@@ -7,6 +7,7 @@ import {User} from "./User";
 import UserBet from "./UserBet";
 import {BetNotActiveException} from "../Exceptions/BetNotActiveException";
 import UnprocessableStatusChange from "../Exceptions/UnprocessableStatusChange";
+import UserBetState from "../ValueObjects/UserBetState";
 
 class Bet {
   private id: Uuid;
@@ -15,7 +16,7 @@ class Bet {
   private status!: BetStatus;
   private name: string;
   private eventId: string;
-  private odd: Money;
+  private odd: number;
   private result: Nullable<BetResult> = null;
   private createdAt!: Date;
   private updatedAt!: Date;
@@ -23,7 +24,7 @@ class Bet {
   private deletedAt: Nullable<Date> = null;
   private users: Array<UserBet> = [];
 
-  constructor(id: Uuid, option: string, sport: string, name: string, eventId: string, odd: Money) {
+  constructor(id: Uuid, option: string, sport: string, name: string, eventId: string, odd: number) {
 
     this.id = id;
     this.option = option;
@@ -33,7 +34,7 @@ class Bet {
     this.odd = odd;
   }
 
-  static create(option: string, sport: string, name: string, eventId: string, odd: Money): Bet {
+  static create(option: string, sport: string, name: string, eventId: string, odd: number): Bet {
     const id = new Uuid(Uuid.random().value);
     const bet = new Bet(id, option, sport, name, eventId, odd);
 
@@ -51,7 +52,7 @@ class Bet {
       primitives.sport,
       primitives.name,
       primitives.event_id,
-      Money.fromPrimitives(primitives.odd),
+      primitives.odd / 100,
     );
 
     bet.createdAt = new Date(primitives.created_at);
@@ -72,7 +73,7 @@ class Bet {
       sport: this.sport,
       name: this.name,
       event_id: this.eventId,
-      odd: this.odd.amount,
+      odd: this.odd * 100,
       status: this.status.value,
       created_at: this.createdAt.toISOString(),
       updated_at: this.updatedAt.toISOString(),
@@ -118,12 +119,26 @@ class Bet {
 
     this.status = new BetStatus(BetStatus.SETTLED);
     this.result = result;
+    this.startPaySettled();
 
     this.updatedAt = new Date();
   }
 
   public getId() {
     return this.id;
+  }
+
+  public startPaySettled() {
+
+    const result = this.result?.equals(BetResult.WIN) ? new UserBetState(UserBetState.WON) : new UserBetState(UserBetState.LOST)
+
+    for (let user of this.users) {
+      user.payWithOdd(this.odd, result);
+    }
+  }
+
+  public getUsers() {
+    return this.users;
   }
 }
 

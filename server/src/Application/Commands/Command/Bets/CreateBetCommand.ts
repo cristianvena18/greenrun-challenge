@@ -1,5 +1,3 @@
-import Money from "../../../../Domain/ValueObjects/Money";
-
 class CreateBetCommand {
 
   constructor(
@@ -7,7 +5,7 @@ class CreateBetCommand {
     private sport: string,
     private name: string,
     private eventId: string,
-    private baseOdd: Money,
+    private baseOdd: number,
   ) {
   }
 
@@ -27,7 +25,7 @@ class CreateBetCommand {
     return this.eventId;
   }
 
-  getBaseOdd(): Money {
+  getBaseOdd(): number{
     return this.baseOdd;
   }
 }

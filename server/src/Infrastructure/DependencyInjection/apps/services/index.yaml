@@ -29,7 +29,7 @@ services:
 
   Bets.SettleBetResultHandler:
     class: Application/Commands/Handler/Bets/SettleBetResultHandler
-    arguments: ['@Bets.Repository']
+    arguments: ['@Bets.Repository', '@User.Repository']
 
   Transaction.GetTransactionsFilteredHandler:
     class: Application/Commands/Handler/Transactions/GetTransactionsFilteredHandler

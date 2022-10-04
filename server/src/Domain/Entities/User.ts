@@ -3,6 +3,7 @@ import {UserRole} from "../ValueObjects/UserRole";
 import UserState from "../ValueObjects/UserState";
 import {Nullable} from "../ValueObjects/Nullable";
 import Money from "../ValueObjects/Money";
+import CustomMoney from "../ValueObjects/Money";
 import TransactionCategory from "../ValueObjects/TransactionCategory";
 import TransactionStatus from "../ValueObjects/TransactionStatus";
 import Transaction from "./Transaction";
@@ -50,7 +51,7 @@ class User {
       primitives.username,
     );
 
-    user.transactions = primitives.transactions.map(Transaction.fromPrimitives)
+    user.transactions = primitives.transactions?.map(Transaction.fromPrimitives) || []
     user.amount = primitives.amount ? Money.fromPrimitives(primitives.amount) : Money.fromInteger(0, 'USD');
     user.state = new UserState(primitives.user_state);
     user.createdAt = new Date(primitives.created_at);
@@ -115,6 +116,7 @@ class User {
 
     this.amount = this.amount.subtract(amount);
     this.transactions.push(transaction);
+    this.updatedAt = new Date();
   }
 
   deposit(amount: Money) {
@@ -126,6 +128,7 @@ class User {
 
     this.amount = this.amount.add(amount);
     this.transactions.push(transaction);
+    this.updatedAt = new Date();
   }
 
   withdraw(amount: Money) {
@@ -138,6 +141,7 @@ class User {
 
     this.amount = this.amount.subtract(amount);
     this.transactions.push(transaction);
+    this.updatedAt = new Date();
   }
 
   getBalance() {
@@ -159,6 +163,14 @@ class User {
 
   block() {
     this.state = new UserState(UserState.BLOCKED)
+    this.updatedAt = new Date();
+  }
+
+  payBet(amount: CustomMoney) {
+    const transaction = Transaction.create(this, amount, TransactionCategory.WON, TransactionStatus.COMPLETED)
+
+    this.amount = this.amount.add(amount);
+    this.transactions.push(transaction);
     this.updatedAt = new Date();
   }
 }
